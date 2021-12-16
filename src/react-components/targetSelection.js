@@ -73,7 +73,7 @@ export function TargetSelection(props) {
     <div className="target-selection-container">
       {enemyTeamState.map((unit, unitIndex) =>
         unit["health"]["current"] === 0 ? (
-          <SelectionOptionPlaceholder />
+          <SelectionOptionPlaceholder key={`selection-option-${unitIndex}`} />
         ) : (
           <SelectionOption
             onSelect={() => selectUnitIndex(unitIndex)}

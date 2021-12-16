@@ -23,11 +23,13 @@ export function LifeBar(props) {
             d={`m0 0l960 0l0 56l-910 0z`}
             fillRule="evenodd"
           />
-          <path
-            fill="#55aa55"
-            d={`m0 0l${currentHealth + 48} 0l0 48l-${currentHealth} 0z`}
-            fillRule="evenodd"
-          />
+          {props.current > 0 ? (
+            <path
+              fill="#55aa55"
+              d={`m0 0l${currentHealth + 48} 0l0 48l-${currentHealth} 0z`}
+              fillRule="evenodd"
+            />
+          ) : null}
           <path
             xmlns="http://www.w3.org/2000/svg"
             stroke="#000000"

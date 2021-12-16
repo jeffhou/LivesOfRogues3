@@ -1,6 +1,6 @@
 // process damage, but not death – returns updated enemy team
-const damageEnemyPlayer = (enemyTeam, targetIndex, amount) => {
-  return enemyTeam.map((unit, unitIndex) => {
+const damagePlayer = (team, targetIndex, amount) => {
+  return team.map((unit, unitIndex) => {
     if (unitIndex === targetIndex) {
       const remainingHealth = Math.max(unit["health"]["current"] - amount, 0);
       return Object.assign({}, unit, {
@@ -70,11 +70,19 @@ const processMove = (gamePhase, playerTeam, enemyTeam) => {
     if (step["targetType"] === "SINGLE_TARGET") {
       if (step["abilityType"] === "DAMAGE") {
         const damageAmount = step["amount"];
-        enemyTeam = damageEnemyPlayer(
-          enemyTeam,
-          gamePhase["target"]["index"],
-          damageAmount
-        );
+        if (currentUnitIdentifiers["team"] === "player") {
+          enemyTeam = damagePlayer(
+            enemyTeam,
+            gamePhase["target"]["index"],
+            damageAmount
+          );
+        } else {
+          playerTeam = damagePlayer(
+            playerTeam,
+            gamePhase["target"]["index"],
+            damageAmount
+          );
+        }
         // TODO – process death
         // TODO - process full team death (defeat/victory)
       }

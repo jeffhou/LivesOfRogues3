@@ -4,6 +4,7 @@ import { GamePhaseAtom, GamePhases } from "recoil-atoms/gamePhase";
 import { useRecoilState } from "recoil";
 import { safeRecoilUpdate } from "./../util";
 import { GamePhaseService } from "./../services/gamePhase";
+import { EnemyDecisionService } from "./../services/enemyDecision";
 
 export function MoveDetails(props) {
   const [gamePhaseState, setGamePhaseState] = useRecoilState(GamePhaseAtom);
@@ -13,15 +14,32 @@ export function MoveDetails(props) {
   const targetIndex = gamePhaseState.target.index;
 
   const dismissMoveDetails = safeRecoilUpdate(() => {
-    setGamePhaseState((state) => {
-      return Object.assign({}, state, {
-        phase: "move-select",
-        currentUnit: GamePhaseService.getCurrentUnitIdentifiersForNextTurn(
-          playerTeamState,
-          [] // TODO - handle when current unit is enemyTeam, this should be enemyTeamState after
-        )
+    const nextCurrentUnitIdentifiers = GamePhaseService.getCurrentUnitIdentifiersForNextTurn(
+      playerTeamState,
+      enemyTeamState // TODO - handle when current unit is enemyTeam, this should be enemyTeamState after
+    );
+
+    // TODO - handle for when there's victory / defeat
+    if (nextCurrentUnitIdentifiers["team"] === "player") {
+      setGamePhaseState((state) => {
+        return Object.assign({}, state, {
+          phase: "move-select",
+          currentUnit: nextCurrentUnitIdentifiers
+        });
       });
-    });
+    } else {
+      const updatedGamePhaseState = Object.assign({}, gamePhaseState, {
+        currentUnit: nextCurrentUnitIdentifiers
+      });
+      const updatedStates = EnemyDecisionService.simulateEnemyTurn(
+        updatedGamePhaseState,
+        playerTeamState,
+        enemyTeamState
+      );
+      setGamePhaseState(updatedStates.gamePhase);
+      setEnemyTeamState(updatedStates.enemyTeam);
+      setPlayerTeamState(updatedStates.playerTeam);
+    }
   });
 
   const currentUnit = GamePhaseService.getCurrentUnit(

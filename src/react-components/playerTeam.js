@@ -11,7 +11,9 @@ export function PlayerTeam(props) {
       {teamState.map((unit, unitIndex) => (
         <CharacterIcon
           data={{
-            active: unitIndex === gamePhase.currentUnit.unitIndex,
+            active:
+              unitIndex === gamePhase["currentUnit"]["unitIndex"] &&
+              gamePhase["currentUnit"]["team"] === "player",
             name: unit.name,
             currentHp: unit.health.current,
             maxHp: unit.health.max,

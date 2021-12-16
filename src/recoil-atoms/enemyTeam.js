@@ -10,7 +10,7 @@ export const EnemyTeamAtom = atom({
         max: 24
       },
       currentInitiative: 0,
-      initiativeGain: 3,
+      initiativeGain: 11,
       moves: [
         {
           name: "Basic Arrow",

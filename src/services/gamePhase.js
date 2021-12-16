@@ -10,9 +10,15 @@ const getCurrentUnit = (gamePhase, playerTeam, enemyTeam) => {
 
 const getTargetUnit = (gamePhase, playerTeam, enemyTeam) => {
   const targetIdentifiers = gamePhase["target"];
-  return targetIdentifiers["type"] === "ENEMY_UNIT"
-    ? enemyTeam[targetIdentifiers["index"]]
-    : playerTeam[targetIdentifiers["index"]];
+  if (targetIdentifiers["type"] === "ENEMY_UNIT") {
+    return gamePhase["currentUnit"]["team"] === "player"
+      ? enemyTeam[targetIdentifiers["index"]]
+      : playerTeam[targetIdentifiers["index"]];
+  }
+  throw new Error(
+    "Invalid state for getTargetUnit " +
+      JSON.stringify({ gamePhase, playerTeam, enemyTeam })
+  );
 };
 
 const getCurrentUnitIdentifiersForNextTurn = (playerTeam, enemyTeam) => {
